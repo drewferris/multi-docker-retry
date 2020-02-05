@@ -1,0 +1,22 @@
+sudo: required
+services: 
+    - docker
+
+before_install:
+    - docker build -t drew2222222/react-test-retry -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true drew2222222/react-test-retry npm test
+
+after_success:
+    - docker build -t drew2222222/multi-client-retry ./client
+    - docker build -t drew2222222/multi-nginx-retry ./nginx
+    - docker build -t drew2222222/multi-server-retry ./server
+    - docker build -t drew2222222/multi-worker-retry ./worker
+    # Log in to the docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    # Take those images and push them to docker hub
+    - docker push drew2222222/multi-client-retry
+    - docker push drew2222222/multi-nginx-retry
+    - docker push drew2222222/multi-server-retry
+    - docker push drew2222222/multi-worker-retry
