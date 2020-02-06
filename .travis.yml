@@ -20,3 +20,15 @@ after_success:
     - docker push drew2222222/multi-nginx-retry
     - docker push drew2222222/multi-server-retry
     - docker push drew2222222/multi-worker-retry
+
+deploy:
+    provider: elasticbeanstalk
+    region: us-east-2
+    app: multi-docker-retry
+    env: MultiDockerRetry-env
+    bucket_name: elasticbeanstalk-us-east-2-696696467085
+    bucket_path: docker-multi-retry
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
